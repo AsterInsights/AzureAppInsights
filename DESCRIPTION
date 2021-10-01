@@ -1,7 +1,7 @@
 Package: AzureAppInsights
 Type: Package
 Title: Include Azure Application Insights in Shiny Apps
-Version: 0.2.0.9999
+Version: 0.3.0
 Authors@R: c(
     person("Stefan McKinnon", "Høj-Edwards", , "smhe@kamstrup.dk", c("aut","cre")),
     person("Kamstrup A/S", role = c("cph"))
