@@ -33,6 +33,7 @@
 #' @param include.ip Logical, adds \code{ip} to all tracking's \code{customDimension}. See note.
 #' @param cookie.user Logical, when \code{TRUE} sets a cookie with a random string and submits this
 #'   along with any tracking with the key \code{userid}.
+#' @return Methods sends data to client's browser; returns the sent list, invisibly.
 #' @include 0aux.R
 #' @include cfg.R
 #' @export
@@ -78,6 +79,7 @@ startAzureAppInsights  <- function(session, cfg, instance.name = 'appInsights', 
   )
 
   session$sendCustomMessage('azure_insights_run', msg)
+  invisible(msg)
 }
 
 #' @rdname azureinsights
@@ -98,6 +100,7 @@ includeAzureAppInsights <- function() {
 #' @param session The \code{session} object passed to function given to \code{shinyServer}.
 #' @param name Name of the event.
 #' @param properties List of properties to track. \code{appId} is automatically inserted.
+#' @return Method sends data to client's browser; returns the sent list, invisibly.
 #'
 #' @export
 trackEvent <- function(session, name, properties) {
@@ -106,6 +109,7 @@ trackEvent <- function(session, name, properties) {
   assertthat::assert_that(!is.null(names(properties)), all(names(properties) != ""))
   msg <- jsonlite::toJSON(list(name=name, properties=properties), auto_unbox = TRUE, null='null')
   session$sendCustomMessage('azure_track_event', msg)
+  invisible(msg)
 }
 
 
