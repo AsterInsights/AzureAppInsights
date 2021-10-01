@@ -78,11 +78,29 @@ Shiny.addCustomMessageHandler("azure_insights_run", function(msg) {
   Shiny.addCustomMessageHandler('azure_track_event', function(evnt) {
     let name = evnt.name;
     let properties = evnt.properties;
+    if (Array.isArray(properties)) {
+      properties = {};
+    }
     if (typeof properties != 'object' || properties === null || Array.isArray(properties)) {
       throw "trackEvent requires an object with named keys!";
     }
     properties.appId = msg.config.appId;
     appInsights.trackEvent({name: name, properties: properties});
+  });
+
+  // Register handle for track metrics, that ensures appId gets added.
+  Shiny.addCustomMessageHandler('azure_track_metric', function(evnt) {
+    let name = evnt.name;
+    let properties = evnt.properties;
+    let m = evnt.metrics;
+    if (Array.isArray(properties)) {
+      properties = {};
+    }
+    if (typeof properties != 'object' || properties === null || Array.isArray(properties)) {
+      throw "trackEvent requires an object with named keys!";
+    }
+    properties.appId = msg.config.appId;
+    appInsights.trackMetric({name: name, average: m.average, sampleCount: m.count, min: m.range1, max: m.range2, stdDev: m.stdDev}, properties);
   });
 })
 

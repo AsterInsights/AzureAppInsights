@@ -96,22 +96,6 @@ includeAzureAppInsights <- function() {
   )
 }
 
-#' Sends an event to Application Insights
-#' @param session The \code{session} object passed to function given to \code{shinyServer}.
-#' @param name Name of the event.
-#' @param properties List of properties to track. \code{appId} is automatically inserted.
-#' @return Method sends data to client's browser; returns the sent list, invisibly.
-#'
-#' @export
-trackEvent <- function(session, name, properties) {
-  assertthat::assert_that(rlang::is_string(name))
-  assertthat::assert_that(is.list(properties), length(properties) > 0)
-  assertthat::assert_that(!is.null(names(properties)), all(names(properties) != ""))
-  msg <- jsonlite::toJSON(list(name=name, properties=properties), auto_unbox = TRUE, null='null')
-  session$sendCustomMessage('azure_track_event', msg)
-  invisible(msg)
-}
-
 
 
 demo <- function(launch.browser=FALSE, developer.mode=TRUE) {
@@ -123,7 +107,8 @@ demo <- function(launch.browser=FALSE, developer.mode=TRUE) {
     tags$button("Click me!",
       onClick=HTML("appInsights.trackEvent( {name: 'garble', properties: {moobs: 15, bacon: true}});" )
     ),
-    actionButton("button","Click me too!")
+    actionButton("button","Click me too!"),
+    actionButton("metric", "Track metrics! (Check R console for values)")
   )
 
   server <- function(input, output, session) {
@@ -140,6 +125,13 @@ demo <- function(launch.browser=FALSE, developer.mode=TRUE) {
 
     observe({
       trackEvent(session, "click", list("clicks"=input$button))
+    })
+
+    observeEvent(input$metric, {
+      metrics <- runif(5)
+      print('metric summaries:')
+      res <- trackMetric(session, 'metric', metrics)
+      print(res)
     })
 
   }

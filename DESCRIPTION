@@ -30,3 +30,4 @@ Collate:
     'AzureAppInsights-package.R'
     'cfg.R'
     'include_snippet.R'
+    'tracking.R'
