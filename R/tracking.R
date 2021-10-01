@@ -58,7 +58,6 @@ trackMetric <- function(session, name, metrics, properties) {
     assertthat::assert_that(!is.null(names(properties)), all(names(properties) != ""))
 
   assertthat::assert_that(is.numeric(metrics))
-  #if (length(metrics) == 0) return(invisible(NULL))
 
   metrics <- metrics[is.finite(metrics)]
 
@@ -68,7 +67,7 @@ trackMetric <- function(session, name, metrics, properties) {
     average=mean(metrics),
     range=range(metrics),
     count=length(metrics),
-    stdDev=if (length(metrics) < 2) 0.0 else sd(metrics)
+    stdDev=if (length(metrics) < 2) 0.0 else stats::sd(metrics)
   )
   msg <- jsonlite::toJSON(list(name=name, metrics=as.list(m), properties=properties), auto_unbox = TRUE, null='null')
 
