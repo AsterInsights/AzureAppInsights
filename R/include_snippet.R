@@ -90,8 +90,8 @@ includeAzureAppInsights <- function() {
 
   singleton(
     tags$head(
-      tags$script(src='azureinsights/ai.2.min.js'),
-      tags$script(src='azureinsights/azure_insights_loader_v5.js')
+      tags$script(src='azureinsights/ApplicationInsights-JS/ai.2.7.0.min.js'),
+      tags$script(src='azureinsights/azure_insights_loader_v2.js')
     )
   )
 }
