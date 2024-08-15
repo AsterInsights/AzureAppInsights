@@ -8,11 +8,11 @@
 #' and
 #' https://github.com/microsoft/ApplicationInsights-JS
 #' and
-#' https://docs.microsoft.com/en-us/azure/azure-monitor/app/ip-collection?tabs=net
+#' https://learn.microsoft.com/en-us/azure/azure-monitor/app/ip-collection?tabs=net
 #'
 #' @section Tracking users' ip-address:
 #' Generally, Azure's Application Insight does not collect the users' ip-address,
-#' due to it being somewhat sensitive data (\href{https://docs.microsoft.com/en-us/azure/azure-monitor/app/ip-collection?tabs=net}{link}).
+#' due to it being somewhat sensitive data (\href{https://learn.microsoft.com/en-us/azure/azure-monitor/app/ip-collection?tabs=net}{link}).
 #'
 #' \code{\link{startAzureAppInsights}} however has the argument `include.ip` which,
 #' when set to \code{TRUE}, will add the entry \code{ip} to all trackings.
@@ -33,12 +33,13 @@
 #' @param include.ip Logical, adds \code{ip} to all tracking's \code{customDimension}. See note.
 #' @param cookie.user Logical, when \code{TRUE} sets a cookie with a random string and submits this
 #'   along with any tracking with the key \code{userid}.
+#' @param debug Logical, JS loader uses \code{console.log}.
 #' @return Methods sends data to client's browser; returns the sent list, invisibly.
 #' @include 0aux.R
 #' @include cfg.R
 #' @export
 startAzureAppInsights  <- function(session, cfg, instance.name = 'appInsights', ld = 0, useXhr = TRUE, crossOrigin = "anonymous", onInit = NULL,
-    heartbeat=300000, extras=list(), include.ip=FALSE, cookie.user=FALSE) {
+    heartbeat=300000, extras=list(), include.ip=FALSE, cookie.user=FALSE, debug = FALSE) {
   assertthat::assert_that(assertthat::is.string(instance.name))
   assertthat::assert_that(assertthat::is.count(ld) || ld == 0 || ld == -1)
   assertthat::assert_that(rlang::is_logical(useXhr, 1))
@@ -46,12 +47,13 @@ startAzureAppInsights  <- function(session, cfg, instance.name = 'appInsights', 
   assertthat::assert_that(is.numeric(heartbeat) || heartbeat == FALSE, length(heartbeat) == 1)
   assertthat::assert_that(is.null(extras) || is.list(extras))
   assertthat::assert_that(rlang::is_logical(include.ip, 1), rlang::is_logical(cookie.user, 1))
+  assertthat::assert_that(rlang::is_logical(debug, 1))
 
   if (rlang::is_list(cfg)) {
     assertthat::assert_that(length(cfg) > 0)
     assertthat::assert_that(!is.null(cfg$instrumentationKey) || !is.null(cfg$connectionString), !is.null(cfg$appId))
 
-    cfg <- jsonlite::toJSON(cfg, auto_unbox = TRUE, null='null')
+    cfg <- jsonlite::toJSON(cfg, auto_unbox = TRUE, null = 'null')
   }
   assertthat::assert_that(inherits(cfg, 'json'))
 
@@ -72,9 +74,10 @@ startAzureAppInsights  <- function(session, cfg, instance.name = 'appInsights', 
     onInit = onInit, #  Once the application insights instance has loaded and initialized this callback function will be called with 1 argument -- the sdk instance (DO NOT ADD anything to the sdk.queue -- As they won't get called)
     config = cfg,
     options = list(
-      heartbeat=as.integer(heartbeat),
+      heartbeat = as.integer(heartbeat),
       cookie_user = cookie.user,
-      extras=extras
+      extras = extras,
+      debug = debug
     )
   )
 
@@ -82,18 +85,18 @@ startAzureAppInsights  <- function(session, cfg, instance.name = 'appInsights', 
   invisible(msg)
 }
 
+#' @param version Version of the Application Insights JavaScript SDK to load.
 #' @rdname azureinsights
 #' @import shiny
 #' @export
-includeAzureAppInsights <- function() {
-  addResourcePath('azureinsights', system.file('www', package='AzureAppInsights', mustWork=TRUE))
+includeAzureAppInsights <- function(version = c('2.8.14','2.7.0')) {
+  version = match.arg(version)
+  addResourcePath('azureinsights', system.file('www', package = 'AzureAppInsights', mustWork = TRUE))
 
   singleton(
     tags$head(
-      tags$script(src='azureinsights/ApplicationInsights-JS/ai.2.7.0.min.js'),
-      tags$script(src='azureinsights/azure_insights_loader_v2.js')
+      tags$script(src = paste0('azureinsights/ApplicationInsights-JS/ai.',version,'.min.js')),
+      tags$script(src = 'azureinsights/azure_insights_loader_v2.js')
     )
   )
 }
-
-

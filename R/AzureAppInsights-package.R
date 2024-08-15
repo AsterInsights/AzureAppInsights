@@ -14,7 +14,7 @@
 #'
 #'
 #'
-#' @author Stefan McKinnon Høj-Edwards <smhe@@kamstrup.dk>
+#' @author Stefan McKinnon Edwards <smhe@@kamstrup.dk>
 #'
 "_PACKAGE"
 

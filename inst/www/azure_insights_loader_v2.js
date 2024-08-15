@@ -28,9 +28,12 @@ Shiny.addCustomMessageHandler("azure_insights_run", function(msg) {
   // Following assumes that JS SDK script has already loaded
   // it is located in ai.2.min.js
   let options = msg.options;
+  let debug = options.debug ?? false;
   delete msg.options; // remove key before passing on to app.insights -- who knows what it'll do if `options` is found.
-  console.log(msg);
-  console.log(options);
+  if (debug) {
+    console.log(msg);
+    console.log(options);
+  }
 
   let init = new Microsoft.ApplicationInsights.ApplicationInsights(msg);
   let appInsights = init.loadAppInsights();

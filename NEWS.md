@@ -1,5 +1,11 @@
 # News
 
+* Updated JavaScript SDK to version 2.8.14.
+
+* Added support for *not* having updates outputtet with `console.log`.
+
+* Released demonstration of package, see `demo`.
+
 # Version 0.3.0
 
 * Added `trackMetric`, though with some issues due to the JavaScript SDK (present in version 2.7.0).
