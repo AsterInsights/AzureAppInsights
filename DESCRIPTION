@@ -11,11 +11,11 @@ Description: Imports Azure Application Insights for web pages into Shiny apps
     Allows app developers to submit page tracking and submit events.
 License: MIT + file LICENSE
 BugReports: https://github.com/stefanedwards/AzureAppInsights/issues
-Depends: R (>= 4.0.0)
+Depends: R (>= 3.6.1)
 Imports: shiny (>= 1.5.0), rlang (>= 0.4.11), assertthat (>= 0.2.0),
         jsonlite (>= 1.7.2), lubridate (>= 1.7)
 Encoding: UTF-8
-Suggests: testthat, here
+Suggests: testthat
 RoxygenNote: 7.2.3
 Collate: '0aux.R' 'AzureAppInsights-package.R' 'cfg.R' 'demo.R'
         'include_snippet.R' 'tracking.R'
